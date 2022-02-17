@@ -1,6 +1,12 @@
 package com.kaveri.androidservicecomponents
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +16,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import androidx.annotation.RequiresApi
 import com.kaveri.androidservicecomponents.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 
@@ -19,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         startTestService()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun startTestService() {
         startFirstIntent("FIRST", 10)
         CoroutineScope(Dispatchers.Default).launch{
@@ -43,13 +52,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun startFirstIntent(name: String, delayInSec: Int) {
-        val intent = Intent(this, BackGroundService::class.java)
+        val intent = Intent(this, ForeGroundService::class.java)
         val bundle = Bundle()
         bundle.putString("SERVICE_INSTANCE", name)
         bundle.putInt("SEC", delayInSec)
         intent.putExtras(bundle)
-        startService(intent)
+        //startService(intent)
+        startForegroundService(intent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
