@@ -47,9 +47,13 @@ class MainActivity : AppCompatActivity() {
     private fun startTestService() {
         startFirstIntent("FIRST", 10)
         CoroutineScope(Dispatchers.Default).launch {
-            Log.d(TAG, "waiting for a second delay to call next intent")
-            delay(5000)
-            startFirstIntent("SECOND", 14)
+            var cnt = 4
+            while(cnt > 0) {
+                Log.d(TAG, "waiting for a second delay to call next intent")
+                delay(5000)
+                startFirstIntent("SECOND", 14)
+                cnt--
+            }
         }
     }
 
@@ -60,8 +64,14 @@ class MainActivity : AppCompatActivity() {
         bundle.putString("SERVICE_INSTANCE", name)
         bundle.putInt("SEC", delayInSec)
         intent.putExtras(bundle)
-        //startService(intent)
-       startForegroundService(intent)
+       // startService(intent)
+
+        startJobIntentService(intent)
+       //startForegroundService(intent)
+    }
+
+    private fun startJobIntentService(intent: Intent) {
+        SimpleJobIntentService.enqueueWork(this, intent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

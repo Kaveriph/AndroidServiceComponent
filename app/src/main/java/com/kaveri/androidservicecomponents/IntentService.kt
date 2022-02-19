@@ -34,7 +34,7 @@ class IntentService : IntentService("IntentService") {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand $startId")
-        startForeground()
+        //startForeground()
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -53,7 +53,7 @@ class IntentService : IntentService("IntentService") {
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
             notificationChannel
         )
-        var notification = Notification.Builder(this, CHANNEL_DEFAULT_ID)
+        val notification = Notification.Builder(this, CHANNEL_DEFAULT_ID)
             .setContentText("Testing FG................")
             .setContentTitle("Android service component")
             .setContentIntent(pendingIntent)
@@ -63,15 +63,12 @@ class IntentService : IntentService("IntentService") {
 
     private fun executeCoroutine(seconds: Int?, tag: String?) {
         var i: Int = seconds as Int
-        //CoroutineScope(Dispatchers.Default).launch {
             while (i != 0) {
                 Log.d(TAG, "$tag : delaying : $i")
                 broacast(i)
                 Thread.sleep(1000)
                 i--
             }
-           // enableOrDisableTimer(true)
-        //}
     }
 
     private fun broacast(i: Int) {
