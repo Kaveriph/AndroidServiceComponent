@@ -10,8 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidServiceComponents">
         <service
+            android:name=".SimpleJobService"
+            android:enabled="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"></service>
+        <service
             android:name=".IntentService"
-            android:exported="false"></service>
+            android:exported="false" />
         <service
             android:name=".ForeGroundService"
             android:enabled="true"
@@ -20,11 +25,10 @@
             android:name=".BackGroundService"
             android:enabled="true"
             android:exported="true" />
-
         <service
             android:name=".SimpleJobIntentService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true"/>
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
             android:name=".MainActivity"
@@ -37,7 +41,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>
