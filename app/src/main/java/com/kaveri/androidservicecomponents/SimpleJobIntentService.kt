@@ -2,6 +2,7 @@ package com.kaveri.androidservicecomponents
 
 import android.content.Context
 import android.content.Intent
+import android.os.IBinder
 import android.util.Log
 import androidx.annotation.NonNull
 import androidx.core.app.JobIntentService
@@ -17,7 +18,14 @@ class SimpleJobIntentService : JobIntentService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(TAG, "onStartCommand")
         return super.onStartCommand(intent, flags, startId)
+    }
+
+
+    override fun onBind(intent: Intent): IBinder? {
+        Log.d(TAG, "onBind")
+        return super.onBind(intent)
     }
 
     companion object {

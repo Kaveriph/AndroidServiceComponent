@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startFirstIntent(name: String, delayInSec: Int) {
-        val intent = Intent(this, IntentService::class.java)
+        val intent = Intent(this, SimpleJobIntentService::class.java)
         val bundle = Bundle()
         bundle.putString("SERVICE_INSTANCE", name)
         bundle.putInt("SEC", delayInSec)
