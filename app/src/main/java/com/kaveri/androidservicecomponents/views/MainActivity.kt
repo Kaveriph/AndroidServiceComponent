@@ -1,11 +1,11 @@
-package com.kaveri.androidservicecomponents
+package com.kaveri.androidservicecomponents.views
 
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
+import android.app.job.JobWorkItem
 import android.content.*
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -15,8 +15,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.kaveri.androidservicecomponents.R
+import com.kaveri.androidservicecomponents.SimpleJobIntentService
+import com.kaveri.androidservicecomponents.SimpleJobService
+import com.kaveri.androidservicecomponents.SimpleJobServiceWithMutlipleWorks
 import com.kaveri.androidservicecomponents.databinding.ActivityMainBinding
-import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,13 +45,13 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startTestService() {
-        startFirstIntent("FIRST", 30)
+        startFirstIntent("FIRST", 10)
        /* CoroutineScope(Dispatchers.Default).launch {
             var cnt = 4
             while(cnt > 0) {
                 Log.d(TAG, "waiting for a second delay to call next intent")
                 delay(5000)
-                startFirstIntent("SECOND", 14)
+                startFirstIntent("$cnt", 10)
                 cnt--
             }
         }*/
@@ -56,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startFirstIntent(name: String, delayInSec: Int) {
-        val intent = Intent(this, IntentService::class.java)
+        val intent = Intent()
         val bundle = Bundle()
         bundle.putString("SERVICE_INSTANCE", name)
         bundle.putInt("SEC", delayInSec)
@@ -64,20 +67,33 @@ class MainActivity : AppCompatActivity() {
        // startService(intent)
         //startForegroundService(intent)
         //startJobIntentService(intent)
-        startJobScheduler(intent)
+        startJobScheduler()
     }
 
-    private fun startJobScheduler(intent: Intent) {
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun startJobScheduler() {
         val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
-        val bundle = PersistableBundle()
-        bundle.putString("SERVICE_INFO", intent.extras?.getString("SERVICE_INFO"))
-        bundle.putInt("SEC", intent.extras?.getInt("SEC") ?: 15)
-        val jobInfo = JobInfo.Builder(JOB_ID, ComponentName(this, SimpleJobService::class.java))
+        val jobInfo = JobInfo.Builder(JOB_ID, ComponentName(this, SimpleJobServiceWithMutlipleWorks::class.java))
             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-            .setBackoffCriteria(5000, JobInfo.BACKOFF_POLICY_EXPONENTIAL)
-            .setExtras(bundle)
+            .setBackoffCriteria(5000, JobInfo.BACKOFF_POLICY_LINEAR)
             .build()
         jobScheduler.schedule(jobInfo)
+        enqueWork(jobScheduler, jobInfo)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun enqueWork(jobScheduler: JobScheduler, jobInfo: JobInfo) {
+        var item = 1
+        while (item < 5) {
+            var intent = Intent()
+            intent.putExtra("SERVICE_INSTANCE", "JobService-$item")
+            intent.putExtra("SEC", 10)
+            var workItem = JobWorkItem(intent)
+            jobScheduler.enqueue(jobInfo, workItem)
+            item++
+        }
     }
 
     private fun startJobIntentService(intent: Intent) {

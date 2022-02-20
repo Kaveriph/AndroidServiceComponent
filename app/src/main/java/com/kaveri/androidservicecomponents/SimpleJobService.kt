@@ -2,6 +2,7 @@ package com.kaveri.androidservicecomponents
 
 import android.app.job.JobParameters
 import android.app.job.JobService
+import android.content.Intent
 import android.util.Log
 import kotlinx.coroutines.*
 
@@ -11,7 +12,23 @@ class SimpleJobService : JobService() {
     private val TAG = SimpleJobService::class.simpleName
     private var param: JobParameters? = null
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(TAG, "onStartCommand")
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onStart(intent: Intent?, startId: Int) {
+        Log.d(TAG, "onStart")
+        super.onStart(intent, startId)
+    }
+
+    override fun onDestroy() {
+        Log.d(TAG, "onDestroy")
+        super.onDestroy()
+    }
+
     override fun onStartJob(p0: JobParameters?): Boolean {
+        Log.d(TAG, "onStartJob")
         param = p0
         val tag = param?.extras?.getString("SERVICE_INFO") ?: "FIRST"
         val delayInSec = param?.extras?.getInt("SEC") ?: 10
@@ -40,6 +57,4 @@ class SimpleJobService : JobService() {
         coroutine.cancel()
         return true
     }
-
-
 }

@@ -7,8 +7,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.os.bundleOf
-import kotlinx.coroutines.*
+import com.kaveri.androidservicecomponents.views.MainActivity
 
 /**
  * An [IntentService] subclass for handling asynchronous task requests in
